@@ -14,15 +14,15 @@
 body{
   margin:0;
   font-family:Arial,sans-serif;
-  background:#f3f6f8;
-  color:#17202a;
+  background:#f1f5f9;
+  color:#172033;
 }
 
 header{
   background:#075e54;
   color:white;
+  padding:20px;
   text-align:center;
-  padding:25px 15px;
 }
 
 header h1{
@@ -40,21 +40,22 @@ header p{
   padding:18px;
 }
 
-.box,.card{
+.card{
   background:white;
   border-radius:16px;
   padding:18px;
   margin-bottom:18px;
-  box-shadow:0 3px 15px #0001;
+  box-shadow:0 3px 12px rgba(0,0,0,.08);
 }
 
 textarea{
   width:100%;
-  min-height:140px;
-  border:1px solid #ddd;
+  min-height:130px;
+  border:1px solid #ccd3dc;
   border-radius:12px;
   padding:14px;
   font-size:17px;
+  resize:vertical;
   outline:none;
 }
 
@@ -72,28 +73,28 @@ textarea:focus{
 button{
   border:0;
   border-radius:10px;
-  padding:12px 18px;
-  font-size:15px;
+  padding:13px 17px;
+  font-size:16px;
   cursor:pointer;
-}
-
-.search{
   background:#075e54;
   color:white;
-  flex:1;
 }
 
-.photo{
-  background:#e5f4f1;
-  color:#075e54;
+button.secondary{
+  background:#64748b;
 }
 
-.clear{
-  background:#eee;
+button.danger{
+  background:#b91c1c;
 }
 
-#file{
-  display:none;
+button:disabled{
+  opacity:.5;
+}
+
+input[type=file]{
+  width:100%;
+  margin-top:10px;
 }
 
 #preview{
@@ -104,48 +105,58 @@ button{
   border-radius:12px;
 }
 
-.loading{
+#status{
+  margin-top:15px;
+  padding:12px;
+  border-radius:10px;
   display:none;
-  text-align:center;
-  padding:20px;
-  color:#075e54;
+  background:#e0f2fe;
+}
+
+#answer{
+  white-space:pre-wrap;
+  line-height:1.8;
+  font-size:17px;
 }
 
 .source{
-  border-left:4px solid #075e54;
-  background:#f7faf9;
+  border:1px solid #e2e8f0;
+  border-radius:12px;
   padding:12px;
-  margin:12px 0;
-  border-radius:8px;
+  margin-top:10px;
+}
+
+.source h3{
+  margin:0 0 7px;
+  font-size:17px;
 }
 
 .source a{
   color:#075e54;
-  text-decoration:none;
-  font-weight:bold;
+  word-break:break-word;
 }
 
-.copy{
-  background:#075e54;
-  color:white;
-}
-
-.error{
-  color:#a00000;
-}
-
-.history{
-  background:#fafafa;
+.history-item{
+  background:#f8fafc;
   padding:10px;
-  border-radius:10px;
-  margin-top:10px;
+  margin-top:8px;
+  border-radius:9px;
   cursor:pointer;
+}
+
+.history-item:hover{
+  background:#e2e8f0;
+}
+
+.small{
+  color:#64748b;
+  font-size:14px;
 }
 
 footer{
   text-align:center;
-  color:#777;
-  padding:20px;
+  padding:25px;
+  color:#64748b;
 }
 </style>
 </head>
@@ -153,372 +164,507 @@ footer{
 <body>
 
 <header>
-<h1>📚 Deebii Qorataa</h1>
-<p>Gaaffii barreessi ykn suuraa galchi</p>
+  <h1>📚 Deebii Qorataa</h1>
+  <p>Gaaffii kee barreessi ykn suuraa galchi</p>
 </header>
 
 <div class="container">
 
-<div class="box">
+  <div class="card">
 
-<textarea
-id="question"
-placeholder="Gaaffii kee asitti barreessi...">
-</textarea>
+    <h2>🔎 Gaaffii kee</h2>
 
-<input
-id="file"
-type="file"
-accept="image/*">
+    <textarea
+      id="question"
+      placeholder="Fakkeenyaaf: Salaanni maal? Yoom dirqama godhame?"
+    ></textarea>
 
-<img
-id="preview">
+    <h3>📷 Suuraa gaaffii</h3>
 
-<div class="buttons">
+    <input
+      type="file"
+      id="imageInput"
+      accept="image/*"
+    >
 
-<button
-class="photo"
-onclick="document.getElementById('file').click()">
-📷 Suuraa Galchi
-</button>
+    <img id="preview">
 
-<button
-class="search"
-onclick="searchQuestion()">
-🔎 Barbaadi
-</button>
+    <div class="buttons">
 
-<button
-class="clear"
-onclick="clearAll()">
-🗑️ Haqi
-</button>
+      <button onclick="searchQuestion()">
+        🔎 Barbaadi
+      </button>
 
-</div>
+      <button
+        class="secondary"
+        onclick="clearQuestion()">
+        🗑️ Haqi
+      </button>
 
-</div>
+    </div>
 
-<div
-class="loading"
-id="loading">
-⏳ Maddoota barbaadaa jira...
-</div>
+    <div id="status"></div>
 
-<div id="answer"></div>
+  </div>
 
-<div class="card">
 
-<h2>🕘 Seenaa Barbaachaa</h2>
+  <div class="card">
 
-<div id="history"></div>
+    <h2>🤖 Deebii</h2>
 
-</div>
+    <div id="answer">
+      Deebiin kee asitti mul'ata.
+    </div>
+
+    <div class="buttons">
+
+      <button
+        class="secondary"
+        onclick="copyAnswer()">
+        📋 Copy
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <h2>📚 Maddoota Argaman</h2>
+
+    <div id="sources">
+      Maddoonni asitti mul'atu.
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <h2>🕘 Seenaa Gaaffii</h2>
+
+    <div id="history"></div>
+
+    <button
+      class="danger"
+      onclick="clearHistory()">
+      Seenaa Haqi
+    </button>
+
+  </div>
 
 </div>
 
 <footer>
-Deebii Qorataa © 2026
+  Deebii Qorataa © 2026
 </footer>
 
 
 <script>
 
-/* =========================
-   VARIABLES
-========================= */
+const questionInput =
+  document.getElementById("question");
 
-const question =
-document.getElementById("question");
-
-const fileInput =
-document.getElementById("file");
+const imageInput =
+  document.getElementById("imageInput");
 
 const preview =
-document.getElementById("preview");
+  document.getElementById("preview");
 
-const answer =
-document.getElementById("answer");
+const answerBox =
+  document.getElementById("answer");
 
-const loading =
-document.getElementById("loading");
+const sourcesBox =
+  document.getElementById("sources");
 
-const historyBox =
-document.getElementById("history");
+const statusBox =
+  document.getElementById("status");
 
 
 /* =========================
-   IMAGE PREVIEW
+   SUURAA
 ========================= */
 
-fileInput.addEventListener(
-"change",
-function(){
+imageInput.addEventListener("change", function(){
 
-const file=this.files[0];
+  const file = this.files[0];
 
-if(!file)return;
+  if(!file){
+    preview.style.display = "none";
+    return;
+  }
 
-const reader=new FileReader();
+  const reader = new FileReader();
 
-reader.onload=function(e){
+  reader.onload = function(e){
 
-preview.src=e.target.result;
+    preview.src = e.target.result;
 
-preview.style.display="block";
+    preview.style.display = "block";
 
-};
+  };
 
-reader.readAsDataURL(file);
+  reader.readAsDataURL(file);
 
 });
 
 
 /* =========================
-   MAIN SEARCH
+   STATUS
+========================= */
+
+function showStatus(text){
+
+  statusBox.style.display = "block";
+
+  statusBox.innerText = text;
+
+}
+
+
+/* =========================
+   BARBAACHA
 ========================= */
 
 async function searchQuestion(){
 
-let q=question.value.trim();
+  const question =
+    questionInput.value.trim();
 
-if(!q){
+  if(!question){
 
-alert("Mee gaaffii barreessi.");
+    alert(
+      "Maaloo gaaffii kee Afaan Oromoo barreessi."
+    );
 
-return;
+    return;
+  }
 
-}
+  showStatus(
+    "⏳ Maddoota garaagaraa irraa barbaadaa jira..."
+  );
 
-loading.style.display="block";
+  answerBox.innerText =
+    "⏳ Mee xiqqoo eegi...";
 
-answer.innerHTML="";
+  sourcesBox.innerHTML =
+    "";
 
+  try{
 
-try{
+    const results =
+      await searchSources(question);
 
-/* Wikipedia search */
+    if(results.length === 0){
 
-const searchURL=
-"https://en.wikipedia.org/w/rest.php/v1/search/page?q="
-+
-encodeURIComponent(q)
-+
-"&limit=8";
+      answerBox.innerText =
+        "Odeeffannoo gahaa hin argamne.";
 
+      showStatus(
+        "❌ Maddi odeeffannoo hin argamne."
+      );
 
-const response=
-await fetch(searchURL);
+      return;
+    }
 
+    /*
+      Odeeffannoo maddoota garaagaraa
+      walitti qabu.
+    */
 
-if(!response.ok){
+    let combined = "";
 
-throw new Error(
-"Search hin milkoofne."
-);
+    results.forEach((item,index)=>{
 
-}
+      combined +=
+        (index+1) +
+        ". " +
+        item.title +
+        "\n" +
+        item.text +
+        "\n\n";
 
-
-const data=
-await response.json();
-
-
-const pages=
-data.pages || [];
-
-
-if(pages.length===0){
-
-answer.innerHTML=`
-
-<div class="card">
-
-<h2>❌ Deebiin hin argamne</h2>
-
-<p>
-Gaaffii kanaaf madda walqabatu
-hin argamne.
-</p>
-
-</div>
-
-`;
-
-return;
-
-}
+    });
 
 
-/* Get summaries */
+    /*
+      Deebii gabaabaa uumuu.
+      Backend yoo walitti hidhame,
+      bakka kana AI deebii dhugaa kenna.
+    */
 
-let results=[];
+    const answer =
+      makeSimpleAnswer(
+        question,
+        results
+      );
 
-
-for(
-let page of pages.slice(0,6)
-){
-
-try{
-
-const url=
-"https://en.wikipedia.org/api/rest_v1/page/summary/"
-+
-encodeURIComponent(page.title);
-
-const r=
-await fetch(url);
-
-if(r.ok){
-
-const d=
-await r.json();
-
-results.push(d);
-
-}
-
-}catch(e){}
-
-}
+    answerBox.innerText =
+      answer;
 
 
-/* Show */
+    displaySources(results);
 
-showResults(q,results);
+    saveHistory(question);
 
+    showStatus(
+      "✅ Barbaacha xumurame."
+    );
 
-/* History */
+  }catch(error){
 
-saveHistory(q);
+    console.error(error);
 
-loadHistory();
+    answerBox.innerText =
+      "Rakkoon uumame. Mee internet kee ilaali.";
 
+    showStatus(
+      "❌ Barbaacha irratti rakkoon uumame."
+    );
 
-}catch(error){
-
-answer.innerHTML=`
-
-<div class="card error">
-
-<h2>❌ Rakkoo</h2>
-
-<p>
-Internet ykn search irratti rakkoon uumame.
-</p>
-
-</div>
-
-`;
-
-}finally{
-
-loading.style.display="none";
-
-}
+  }
 
 }
 
 
 /* =========================
-   SHOW RESULTS
+   WIKIPEDIA
 ========================= */
 
-function showResults(q,results){
+async function searchWikipedia(question){
 
-let html=`
+  const url =
+    "https://en.wikipedia.org/w/rest.php/v1/search/page?q=" +
+    encodeURIComponent(question) +
+    "&limit=5";
 
-<div class="card">
+  const response =
+    await fetch(url);
 
-<h2>🔎 Gaaffii</h2>
+  if(!response.ok){
+    return [];
+  }
 
-<p>
-${escapeHTML(q)}
-</p>
+  const data =
+    await response.json();
 
-</div>
+  const pages =
+    data.pages || [];
 
-<div class="card">
+  return pages.map(page=>({
 
-<h2>📚 Maddoota Argaman</h2>
+    title:
+      page.title,
 
-`;
+    text:
+      page.description ||
+      "Ibsi gahaan hin argamne.",
 
+    url:
+      "https://en.wikipedia.org/wiki/" +
+      encodeURIComponent(
+        page.title.replace(/ /g,"_")
+      ),
 
-results.forEach(
-(item,index)=>{
+    source:
+      "Wikipedia"
 
-let title=
-item.title || "Madda";
-
-let text=
-item.extract ||
-"Ibsi hin argamne.";
-
-let link="#";
-
-if(
-item.content_urls &&
-item.content_urls.desktop
-){
-
-link=
-item.content_urls.desktop.page;
+  }));
 
 }
 
 
-html+=`
+/* =========================
+   WIKIPEDIA OROMOO
+========================= */
 
-<div class="source">
+async function searchOromoWikipedia(question){
 
-<strong>
-${index+1}. ${escapeHTML(title)}
-</strong>
+  const url =
+    "https://om.wikipedia.org/w/rest.php/v1/search/page?q=" +
+    encodeURIComponent(question) +
+    "&limit=5";
 
-<p>
-${escapeHTML(text)}
-</p>
+  try{
 
-<a
-href="${link}"
-target="_blank">
-🔗 Madda Bana
-</a>
+    const response =
+      await fetch(url);
 
-</div>
+    if(!response.ok){
+      return [];
+    }
 
-`;
+    const data =
+      await response.json();
 
-});
+    const pages =
+      data.pages || [];
+
+    return pages.map(page=>({
+
+      title:
+        page.title,
+
+      text:
+        page.description ||
+        "Ibsi hin argamne.",
+
+      url:
+        "https://om.wikipedia.org/wiki/" +
+        encodeURIComponent(
+          page.title.replace(/ /g,"_")
+        ),
+
+      source:
+        "Wikipedia Afaan Oromoo"
+
+    }));
+
+  }catch(error){
+
+    return [];
+
+  }
+
+}
 
 
-html+=`
+/* =========================
+   MADDOOTA HEDDUU
+========================= */
 
-</div>
+async function searchSources(question){
 
-<div class="card">
+  const all = [];
 
-<h2>💡 Deebii Walitti Qabame</h2>
+  try{
 
-<p>
-Maddoota armaan olii irraa odeeffannoo
-walqabatu argameera. Madda tokko qofaan
-murtii hin kennin; maddoota dubbisiitii
-odeeffannoo walbira qabi.
-</p>
+    const en =
+      await searchWikipedia(question);
 
-<button
-class="copy"
-onclick="copyAnswer()">
-📋 Koppii Godhi
-</button>
+    all.push(...en);
 
-</div>
-
-`;
+  }catch(e){}
 
 
-answer.innerHTML=html;
+  try{
+
+    const om =
+      await searchOromoWikipedia(question);
+
+    all.push(...om);
+
+  }catch(e){}
+
+
+  /*
+    Maddoota wal fakkaatan
+    maqaa irratti hundaa'uun haqi.
+  */
+
+  const unique = [];
+
+  const seen =
+    new Set();
+
+  for(const item of all){
+
+    const key =
+      item.title.toLowerCase();
+
+    if(!seen.has(key)){
+
+      seen.add(key);
+
+      unique.push(item);
+
+    }
+
+  }
+
+  return unique.slice(0,8);
+
+}
+
+
+/* =========================
+   DEEBII WALITTI QABUU
+========================= */
+
+function makeSimpleAnswer(question,results){
+
+  let text =
+    "Gaaffii: " +
+    question +
+    "\n\n";
+
+  text +=
+    "Odeeffannoo maddoota garaagaraa irraa argame:\n\n";
+
+  results.slice(0,5).forEach((item,index)=>{
+
+    text +=
+      "• " +
+      item.title +
+      ": " +
+      item.text +
+      "\n\n";
+
+  });
+
+  text +=
+    "Hubachiisa: Deebiin kun odeeffannoo maddoota armaan olii irraa walitti qabame. Odeeffannoo murteessaa ta'eef madda isaa sirriitti ilaali.";
+
+  return text;
+
+}
+
+
+/* =========================
+   MADDOOTA AGARSIISUU
+========================= */
+
+function displaySources(results){
+
+  sourcesBox.innerHTML = "";
+
+  results.forEach((item,index)=>{
+
+    const div =
+      document.createElement("div");
+
+    div.className =
+      "source";
+
+    div.innerHTML = `
+
+      <h3>
+        ${index+1}. ${escapeHtml(item.title)}
+      </h3>
+
+      <p>
+        ${escapeHtml(item.text)}
+      </p>
+
+      <div class="small">
+        Madda: ${escapeHtml(item.source)}
+      </div>
+
+      <br>
+
+      <a
+        href="${item.url}"
+        target="_blank"
+        rel="noopener">
+        🔗 Madda ilaali
+      </a>
+
+    `;
+
+    sourcesBox.appendChild(div);
+
+  });
 
 }
 
@@ -527,20 +673,53 @@ answer.innerHTML=html;
    COPY
 ========================= */
 
-function copyAnswer(){
+async function copyAnswer(){
 
-const text=
-answer.innerText;
+  const text =
+    answerBox.innerText;
 
-navigator.clipboard
-.writeText(text)
-.then(()=>{
+  try{
 
-alert(
-"Deebiin koppii godhame."
-);
+    await navigator.clipboard.writeText(text);
 
-});
+    alert(
+      "✅ Deebiin copy godhame."
+    );
+
+  }catch(error){
+
+    alert(
+      "Copy gochuun hin danda'amne."
+    );
+
+  }
+
+}
+
+
+/* =========================
+   HAQI
+========================= */
+
+function clearQuestion(){
+
+  questionInput.value = "";
+
+  imageInput.value = "";
+
+  preview.src = "";
+
+  preview.style.display =
+    "none";
+
+  answerBox.innerText =
+    "Deebiin kee asitti mul'ata.";
+
+  sourcesBox.innerHTML =
+    "Maddoonni asitti mul'atu.";
+
+  statusBox.style.display =
+    "none";
 
 }
 
@@ -549,127 +728,121 @@ alert(
    HISTORY
 ========================= */
 
-function saveHistory(q){
+function saveHistory(question){
 
-let history=
-JSON.parse(
-localStorage.getItem(
-"deebii_qorataa_history"
-) || "[]"
-);
+  let history =
+    JSON.parse(
+      localStorage.getItem(
+        "deebii_qorataa_history"
+      ) || "[]"
+    );
 
+  history =
+    history.filter(
+      item => item !== question
+    );
 
-history.unshift(q);
+  history.unshift(question);
 
+  history =
+    history.slice(0,20);
 
-history=
-[...new Set(history)]
-.slice(0,20);
+  localStorage.setItem(
+    "deebii_qorataa_history",
+    JSON.stringify(history)
+  );
 
-
-localStorage.setItem(
-"deebii_qorataa_history",
-JSON.stringify(history)
-);
-
-}
-
-
-function loadHistory(){
-
-let history=
-JSON.parse(
-localStorage.getItem(
-"deebii_qorataa_history"
-) || "[]"
-);
-
-
-if(history.length===0){
-
-historyBox.innerHTML=
-"<p>Seenaa barbaachaa hin jiru.</p>";
-
-return;
+  displayHistory();
 
 }
 
 
-historyBox.innerHTML="";
+function displayHistory(){
 
+  const box =
+    document.getElementById(
+      "history"
+    );
 
-history.forEach(q=>{
+  const history =
+    JSON.parse(
+      localStorage.getItem(
+        "deebii_qorataa_history"
+      ) || "[]"
+    );
 
-let div=
-document.createElement("div");
+  box.innerHTML = "";
 
-div.className="history";
+  if(history.length === 0){
 
-div.textContent=
-"🔎 "+q;
+    box.innerHTML =
+      "<p class='small'>Seenaa hin jiru.</p>";
 
-div.onclick=function(){
+    return;
 
-question.value=q;
+  }
 
-searchQuestion();
+  history.forEach(item=>{
 
-};
+    const div =
+      document.createElement("div");
 
-historyBox.appendChild(div);
+    div.className =
+      "history-item";
 
-});
+    div.innerText =
+      "🔎 " + item;
+
+    div.onclick = function(){
+
+      questionInput.value =
+        item;
+
+      searchQuestion();
+
+    };
+
+    box.appendChild(div);
+
+  });
 
 }
 
 
-/* =========================
-   CLEAR
-========================= */
+function clearHistory(){
 
-function clearAll(){
+  localStorage.removeItem(
+    "deebii_qorataa_history"
+  );
 
-question.value="";
-
-fileInput.value="";
-
-preview.src="";
-
-preview.style.display="none";
-
-answer.innerHTML="";
-
-}
-
-
-/* =========================
-   SECURITY
-========================= */
-
-function escapeHTML(text){
-
-return String(text)
-
-.replace(/&/g,"&amp;")
-
-.replace(/</g,"&lt;")
-
-.replace(/>/g,"&gt;")
-
-.replace(/"/g,"&quot;")
-
-.replace(/'/g,"&#039;");
+  displayHistory();
 
 }
 
 
 /* =========================
-   START
+   HTML SECURITY
 ========================= */
 
-loadHistory();
+function escapeHtml(text){
+
+  return String(text)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================
+   JALQABA
+========================= */
+
+displayHistory();
 
 </script>
 
 </body>
-  </html>
+    </html>
